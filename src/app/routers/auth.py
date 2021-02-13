@@ -17,12 +17,16 @@ router = APIRouter(
 )
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=Token)
-def login(email: str = Body(...), password: str = Body(...), db: Session = Depends(get_db)):
+def login(email: str = Body(...), password: str = Body(...), fcm_token: str = Body(...), db: Session = Depends(get_db)):
     user = User.get_user_by_email(email, db)
     if not user:
         raise user_not_found_exception
     if not verify_password(password, user.password):
         raise incorrect_password_exception
+    print(fcm_token)
+    user.fcm_token = fcm_token
+    db.commit()
+    db.refresh(user)
     access_token_expires = timedelta(minutes=int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")))
     access_token = create_access_token(
         data={
@@ -37,6 +41,7 @@ def login(email: str = Body(...), password: str = Body(...), db: Session = Depen
 @router.post("/register", status_code=status.HTTP_201_CREATED, response_model=Token)
 def register(body: UserBase, db: Session = Depends(get_db)):
     user = User.create_user(body, db)
+    print(user.fcm_token)
     access_token_expires = timedelta(minutes=int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")))
     access_token = create_access_token(
         data={

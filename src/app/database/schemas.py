@@ -9,6 +9,7 @@ class UserBase(BaseModel):
     email: str
     full_name: str
     password: str
+    fcm_token: str
 
 # Schema class is schema for response body and db object
 class UserSchema(UserBase):

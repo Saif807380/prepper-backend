@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, Date, ForeignKey, Table, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, Date, ForeignKey, Table, DateTime, Time
 from sqlalchemy.orm import relationship
 from .db import Base
 
@@ -19,6 +19,7 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     full_name = Column(String)
     password = Column(String)
+    fcm_token = Column(String)
 
     plans = relationship("TravelPlan", lazy='joined')
 
@@ -38,7 +39,6 @@ class City(Base):
     __tablename__ = "cities"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-    duration = Column(Integer)
 
     plans = relationship('TravelPlan', secondary=plans_cities_table, back_populates="cities", lazy='joined')
 
@@ -46,9 +46,10 @@ class Pill(Base):
     __tablename__ = "pills"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True)
+    name = Column(String)
     dosage = Column(Integer)
     stock = Column(Integer)
-    time = Column(Integer)
+    time = Column(Time)
+    last_sent = Column(DateTime, nullable=True)
     period = Column(String)
     plans = relationship('TravelPlan', secondary=plans_pills_table, back_populates="pills", lazy='joined')

@@ -1,11 +1,13 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 import uvicorn
 
 load_dotenv()
 
-from database.db import Base, engine
+from database.db import Base, engine, get_db
+from database.queries import TravelPlan
 from routers import auth, travel_plans
 
 Base.metadata.create_all(bind=engine)
@@ -30,6 +32,10 @@ def check():
     return {
         "message": "Hello World!"
     }
+
+@app.get("/api/notify", status_code=status.HTTP_200_OK, tags=["notify"])
+async def send_notif(db: Session = Depends(get_db)):
+    TravelPlan.send_notif(db)
 
 if __name__ == '__main__':
     uvicorn.run(app)
