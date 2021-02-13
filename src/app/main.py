@@ -6,7 +6,7 @@ import uvicorn
 load_dotenv()
 
 from database.db import Base, engine
-from routers import auth
+from routers import auth, travel_plans
 
 Base.metadata.create_all(bind=engine)
 
@@ -15,6 +15,7 @@ origins = []
 app = FastAPI()
 
 app.include_router(auth.router)
+app.include_router(travel_plans.router)
 
 app.add_middleware(
     CORSMiddleware,

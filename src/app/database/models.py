@@ -20,8 +20,7 @@ class User(Base):
     full_name = Column(String)
     password = Column(String)
 
-    plans = relationship("TravelPlan")
-    pills = relationship("Pills")
+    plans = relationship("TravelPlan", lazy='joined')
 
 class TravelPlan(Base):
     __tablename__ = "travel_plans"
@@ -32,8 +31,8 @@ class TravelPlan(Base):
     end_date = Column(Date)
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    cities = relationship('City', secondary=plans_cities_table, back_populates="plans")
-    pills = relationship('Pill', secondary=plans_pills_table, back_populates="pills")
+    cities = relationship('City', secondary=plans_cities_table, back_populates="plans", lazy='joined')
+    pills = relationship('Pill', secondary=plans_pills_table, back_populates="plans", lazy='joined')
 
 class City(Base):
     __tablename__ = "cities"
@@ -41,7 +40,7 @@ class City(Base):
     name = Column(String)
     duration = Column(Integer)
 
-    plans = relationship('TravelPlan', secondary=plans_cities_table, back_populates="cities")
+    plans = relationship('TravelPlan', secondary=plans_cities_table, back_populates="cities", lazy='joined')
 
 class Pill(Base):
     __tablename__ = "pills"
@@ -50,6 +49,6 @@ class Pill(Base):
     name = Column(String, unique=True)
     dosage = Column(Integer)
     stock = Column(Integer)
-    next_date = Column(DateTime)
-    plans = relationship('TravelPlan', secondary=plans_pills_table, back_populates="pills")
-    user_id = Column(Integer, ForeignKey("users.id"))
+    time = Column(Integer)
+    period = Column(String)
+    plans = relationship('TravelPlan', secondary=plans_pills_table, back_populates="pills", lazy='joined')

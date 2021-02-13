@@ -50,7 +50,6 @@ def register(body: UserBase, db: Session = Depends(get_db)):
 @router.get("/user", status_code=status.HTTP_200_OK, response_model=UserSchema)
 def get_user(user_id: int = Depends(is_autheticated), db: Session = Depends(get_db)):
     user = User.get_user_by_id(user_id,db)
-    print(user)
     if not user:
         raise user_not_found_exception
     return user
