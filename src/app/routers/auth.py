@@ -7,7 +7,7 @@ from helpers.auth import create_access_token, verify_password
 from database.schemas import UserSchema, UserBase, Token
 from database.queries import User
 from database.db import get_db
-from middleware.auth import is_autheticated
+from middleware.auth import is_authenticated
 
 from exceptions.user import user_not_found_exception, incorrect_password_exception, user_already_exists_exception
 
@@ -53,7 +53,7 @@ def register(body: UserBase, db: Session = Depends(get_db)):
     return Token(access_token=f"Bearer {access_token}")
 
 @router.get("/user", status_code=status.HTTP_200_OK, response_model=UserSchema)
-def get_user(user_id: int = Depends(is_autheticated), db: Session = Depends(get_db)):
+def get_user(user_id: int = Depends(is_authenticated), db: Session = Depends(get_db)):
     user = User.get_user_by_id(user_id,db)
     if not user:
         raise user_not_found_exception

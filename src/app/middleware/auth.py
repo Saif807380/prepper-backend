@@ -8,7 +8,7 @@ import os
 
 from exceptions.user import token_exception
 
-async def is_autheticated(authorization: str = Header(...), db: Session = Depends(get_db)):
+async def is_authenticated(authorization: str = Header(...), db: Session = Depends(get_db)):
     token: str = authorization.split()[-1]
     try:
         payload = jwt.decode(

@@ -64,6 +64,7 @@ class TravelPlan:
                     pill.last_sent += timedelta(minutes=p)
                 else:
                     pill.last_sent = datetime.now()
+                pill.stock -= 1
         print(users)
         for id in users:
             user = db.query(models.User).filter(models.User.id == id).first()
@@ -88,3 +89,5 @@ class TravelPlan:
             print(response.status_code)
 
             print(response.json())
+
+    
